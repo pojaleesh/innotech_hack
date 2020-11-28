@@ -44,7 +44,6 @@ def upload_image():
 
             if allowed_image(image.filename):
                 filename = secure_filename(image.filename)
-
                 image.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
 
                 print("Image saved")
@@ -59,4 +58,4 @@ def upload_image():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4567)
+    app.run(port=4567)
