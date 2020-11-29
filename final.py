@@ -3,10 +3,12 @@ import urllib.request
 import os
 import import_ipynb
 import sys
-sys.path.append('.')
+import os
 from Find_profile import find
 import torch
 
-df = pd.read_csv('upload_images/Profiles.csv')
+
+df = pd.read_csv('Profiles.csv')
+filename = 'upload_images/images_uploaded/img_temp'
 
 print(df)

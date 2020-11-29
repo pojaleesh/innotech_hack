@@ -1,6 +1,7 @@
 from flask import request, redirect, render_template
 from werkzeug.utils import secure_filename
 from flask import Flask
+import time
  
 
 app = Flask(__name__)
@@ -40,7 +41,6 @@ def upload_image():
             f.write(request.form['name'])
             from parser_from_vk import is_close, get_info
             import pandas as pd
-
             with open('links', 'r') as f:
                 tmp = f.readlines()
                 links = []
@@ -53,6 +53,9 @@ def upload_image():
                     new_photo = get_info(new_id)['photo_max']
                     df = df.append({'id' : ' '.join(new_id.split()), 'photo' : ' '.join(new_photo.split())}, ignore_index=True)
                 df.to_csv('Profiles.csv')
+            import sys
+            import os
+            import final
             image = request.files["image"]
             if image.filename == "":
                 print("No filename")
@@ -61,7 +64,7 @@ def upload_image():
             if allowed_image(image.filename):
                 filename = secure_filename(image.filename)
                 
-                image.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], 'img_temp'))
                 
                 print("Image saved")
                 
@@ -74,6 +77,6 @@ def upload_image():
     return render_template("upload_image.html")
 
 
-if __name__ == "__main__":
-    app.run(port=4567)
+if '__main__' == __name__:
+    app.run(port=4567,  debug=True)
 
