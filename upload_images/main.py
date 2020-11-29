@@ -52,6 +52,9 @@ def upload_image():
                     new_photo = get_info(new_id)['photo_max']
                     df = df.append({'id' : ' '.join(new_id.split()), 'photo' : ' '.join(new_photo.split())}, ignore_index=True)
                 df.to_csv('Profiles.csv')
+            import sys
+            sys.path.append('../')
+            import final
             image = request.files["image"]
             if image.filename == "":
                 print("No filename")
@@ -60,11 +63,19 @@ def upload_image():
             if allowed_image(image.filename):
                 filename = secure_filename(image.filename)
                 
-                image.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], 'img_temp.jpg'))
                 
                 print("Image saved")
-                
-                return redirect(request.url)
+                name1 = final.first_name
+                second_name1 = final.second_name
+                prof1 = final.profession
+                city1 = final.city
+                salary1 = final.salary
+                id1 = final.ans
+                mapa1 = str(final.MAPA)
+                return render_template("upload_image.html", id=id1, name=name1, second_name=second_name1,
+                                       prof=prof1, city=city1, salary=salary1, mapa=mapa1)
+                #return redirect(request.url)
             
             else:
                 print("That file extension is not allowed")
@@ -74,5 +85,5 @@ def upload_image():
 
 
 if __name__ == "__main__":
-    app.run(port=4567)
+    app.run(debug=True, port=1337)
 

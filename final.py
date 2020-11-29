@@ -6,9 +6,21 @@ import sys
 import os
 from Find_profile import find
 import torch
+from ParserEgrul.run import get_data
 
 
 df = pd.read_csv('Profiles.csv')
-filename = 'upload_images/images_uploaded/img_temp'
+filename = 'images_uploaded/img_temp.jpg'
 
-print(df)
+ans = find(df, filename)
+
+if ans:
+    print(ans)
+    import sys
+    sys.path.append('../vk_alg')
+    from script import get_profession
+    profession, city, salary, first_name, second_name = get_profession(ans)
+    print(profession, city, salary, first_name, second_name)
+    MAPA = get_data(first_name + ' ' + second_name)
+else:
+    print('nothing')

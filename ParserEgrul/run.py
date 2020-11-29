@@ -14,7 +14,7 @@ import urllib
 import os
 
 options = webdriver.ChromeOptions()
-options.add_experimental_option("prefs", {"download.default_directory": os.path.join(os.getcwd(), 'ParserEgrul', 'tmp')})
+options.add_experimental_option("prefs", {"download.default_directory": os.path.join(os.getcwd(), 'tmp')})
 options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 # Установить ChromeDriver соответсвующей версии Google Chrome в C:/Program Files/chromedriver/ 
@@ -44,13 +44,17 @@ def paste_id_or_name_and_get_pdf(id_or_name):
 
 def get_pdf(id_or_name):
     enter()
-    path = os.path.join(os.getcwd(), 'ParserEgrul', 'tmp')
+    path = os.path.join(os.getcwd(), 'tmp')
     for e in os.listdir(path):
         try:
             os.remove(os.path.join(path, e))
         except Exception:
             raise('Закройте все открытые pdf-ники в папке tmp')
-    paste_id_or_name_and_get_pdf(id_or_name)
+    try:
+        paste_id_or_name_and_get_pdf(id_or_name)
+    except Exception:
+        close()
+        return
     time.sleep(3)
     close()
     os.rename(os.path.join(path, os.listdir(path)[0]), os.path.join(path, 'temp.pdf'))
@@ -69,16 +73,16 @@ def extract_text_from_pdf(pdf_path):
     fake_file_handle = io.StringIO()
     converter = TextConverter(resource_manager, fake_file_handle)
     page_interpreter = PDFPageInterpreter(resource_manager, converter)
- 
+
     with open(pdf_path, 'rb') as fh:
-        for page in PDFPage.get_pages(fh, 
+        for page in PDFPage.get_pages(fh,
                                       caching=True,
                                       check_extractable=True):
             page_interpreter.process_page(page)
- 
+
         text = fake_file_handle.getvalue()
         text = text + ' '
- 
+
     converter.close()
     fake_file_handle.close()
  
@@ -108,7 +112,7 @@ def convert_pdf_to_txt(path):
     fp.close()
     device.close()
     retstr.close()
-    path___ = os.path.join(os.getcwd(), 'ParserEgrul', 'tmp')
+    path___ = os.path.join(os.getcwd(), 'tmp')
     for e in os.listdir(path___):
         try:
             os.remove(os.path.join(path___, e))
@@ -118,12 +122,17 @@ def convert_pdf_to_txt(path):
 
 def from_pdf_to_text():
     # dir_path = os.path.join(os.getcwd(), 'tmp')
-    pdf_path = os.path.join(os.getcwd(), 'ParserEgrul', 'tmp', 'temp.pdf')
-    res = convert_pdf_to_txt(pdf_path)
+    pdf_path = os.path.join(os.getcwd(), 'tmp', 'temp.pdf')
+    try:
+        res = convert_pdf_to_txt(pdf_path)
+    except Exception:
+        return ""
     return res
 
 def make_data(text):
     data = {}
+    if text == "":
+        return data
     sep=''
     text2 = text.split()
     for i in range(0, len(text2)):

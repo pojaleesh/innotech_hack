@@ -15,9 +15,6 @@ def build():
 
     return df
 
-
-tempdf = build()
-
 def get_picture(url, name_of_picture):
     img = urllib.request.urlopen(url).read()
     out = open(os.path.join(os.getcwd(), name_of_picture+'.jpg'), "wb")
@@ -26,6 +23,7 @@ def get_picture(url, name_of_picture):
 
 def find(df, filename):
     for i in range(0, df.shape[0]):
+        print(df['id'][i])
         get_picture(df['photo'][i], 'aplliciant')
         if FaceVerification.isSame('aplliciant.jpg', filename):
             return df['id'][i]
