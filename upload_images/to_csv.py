@@ -6,7 +6,7 @@ with open('links', 'r') as f:
     links = []
     for e in tmp:
         links += e.split()
-    for i in len(links):
+    for i in range(len(links)):
         links[i] = links[i].split('/')[-1]
     df = pd.DataFrame(columns=['id', 'photo'])
     for new_id in links:

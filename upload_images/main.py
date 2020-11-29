@@ -1,6 +1,7 @@
 from flask import request, redirect, render_template
 from werkzeug.utils import secure_filename
 from flask import Flask
+ 
 
 app = Flask(__name__)
 
@@ -17,8 +18,8 @@ def allowed_image(filename):
 
     ext = filename.rsplit(".", 1)[1]
 
-if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
-    return True
+    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
+        return True
     else:
         return False
 
@@ -37,6 +38,21 @@ def upload_image():
         
         if request.files:
             f.write(request.form['name'])
+            from parser_from_vk import is_close, get_info
+            import pandas as pd
+
+            with open('links', 'r') as f:
+                tmp = f.readlines()
+                links = []
+                for e in tmp:
+                    links += e.split()
+                for i in range(len(links)):
+                    links[i] = links[i].split('/')[-1]
+                df = pd.DataFrame(columns=['id', 'photo'])
+                for new_id in links:
+                    new_photo = get_info(new_id)['photo_max']
+                    df = df.append({'id' : ' '.join(new_id.split()), 'photo' : ' '.join(new_photo.split())}, ignore_index=True)
+                df.to_csv('Profiles.csv')
             image = request.files["image"]
             if image.filename == "":
                 print("No filename")
@@ -55,9 +71,9 @@ def upload_image():
                 print("That file extension is not allowed")
                 return redirect(request.url)
 
-return render_template("upload_image.html")
+    return render_template("upload_image.html")
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=4567)
+    app.run(port=4567)
 
