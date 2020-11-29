@@ -53,7 +53,7 @@ def get_info(user_id):
     return response.json()['response'][0]
 
 def main():
-    user = 'widzemin'
+    user = 'nomapunkkk'
     if is_close(user):
         print('----')
     else:
